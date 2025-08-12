@@ -4,6 +4,8 @@ This web application analyzes feedback sentiment using Azure Text Analytics, gen
 
 ## Features
 
+RUNNING ON CLOUD ON : https://feedback-basf-westeu-1754964536.azurewebsites.net/
+
 - **Sentiment Analysis**: Uses Azure Text Analytics API to analyze feedback sentiment (Positive, Negative, Neutral)
 - **LLM-Generated Responses**: Uses Groq API to generate contextual responses based on sentiment
 - **Text-to-Speech**: Converts responses to audio using Azure Speech Services with emotion-adjusted voices
