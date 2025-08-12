@@ -1,0 +1,101 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables (NEVER commit these!)
+.env
+.env.local
+.env.production
+.env.staging
+
+# Azure
+.azure/
+
+# Deployment files and scripts
+AZURE_DEPLOYMENT.md
+AZURE_PORTAL_DEPLOY.md
+AZURE_SETUP.md
+DEPLOYMENT_GUIDE.md
+DEPLOYMENT_SUCCESS.md
+INTERVIEW_DEPLOYMENT_GUIDE.md
+HOW_TO_DEPLOY_FLASK_ON_AZURE.md
+comprehensive_test.py
+deploy_clean.sh
+deploy_heroku.sh
+deploy_to_azure.sh
+fix_azure_providers.sh
+quota_fix.sh
+deploy_free.sh
+
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+.vscode/tasks.json
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# Flask instance folder
+instance/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# Pytest
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Deployment packages
+*.zip
+*.tar.gz
+
+# Audio files (temporary)
+*.wav
+*.mp3

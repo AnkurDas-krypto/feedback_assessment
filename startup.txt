@@ -1,0 +1,8 @@
+# Azure Web App Startup Script
+
+This file contains startup commands for Azure Web App.
+
+For Flask applications, Azure automatically detects and runs:
+- gunicorn app:app (from Procfile)
+
+Environment variables are loaded from Azure App Service Configuration.

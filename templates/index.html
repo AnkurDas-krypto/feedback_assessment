@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Sentiment Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .feedback-form {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.3s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-weight: 600;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+        }
+        
+        .submit-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 15px;
+            border-left: 5px solid #4f46e5;
+        }
+        
+        .sentiment-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+        }
+        
+        .sentiment-positive {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .sentiment-negative {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .sentiment-neutral {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        
+        .confidence {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 15px;
+        }
+        
+        .response-text {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .audio-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .audio-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .audio-btn:hover {
+            background: #059669;
+        }
+        
+        .error {
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #4f46e5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .nav-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 24px;
+            background: #f3f4f6;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background: #e5e7eb;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Feedback Sentiment Analysis</h1>
+            <p>Share your feedback and receive personalized responses with sentiment analysis</p>
+        </div>
+        
+        <div class="content">
+            <form id="feedbackForm" class="feedback-form">
+                <div class="form-group">
+                    <label for="feedback">Your Feedback:</label>
+                    <textarea 
+                        id="feedback" 
+                        name="feedback" 
+                        placeholder="Please share your thoughts, experiences, or suggestions..."
+                        required
+                    ></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    Analyze Feedback
+                </button>
+            </form>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing your feedback...</p>
+            </div>
+            
+            <div id="error" class="error" style="display: none;"></div>
+            
+            <div id="results" class="results">
+                <h3>Analysis Results</h3>
+                <div id="sentimentResult"></div>
+                <div id="confidenceResult" class="confidence"></div>
+                
+                <h4>Generated Response:</h4>
+                <div id="responseText" class="response-text"></div>
+                
+                <div id="audioControls" class="audio-controls">
+                    <button id="playAudio" class="audio-btn" style="display: none;">🎵 Play Audio</button>
+                    <a id="downloadAudio" class="audio-btn" style="display: none;">💾 Download Audio</a>
+                </div>
+                
+                <div id="audioError" class="error" style="display: none;"></div>
+            </div>
+            
+            <a href="/dashboard" class="nav-link">📊 View Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        let currentAudio = null;
+        
+        document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const feedback = document.getElementById('feedback').value.trim();
+            if (!feedback) {
+                showError('Please enter your feedback');
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+            
+            try {
+                const response = await fetch('/submit_feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ feedback: feedback })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to process feedback');
+                }
+                
+                displayResults(data);
+                
+            } catch (error) {
+                showError('Error processing feedback: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+        
+        function displayResults(data) {
+            // Display sentiment
+            const sentimentClass = `sentiment-${data.sentiment.toLowerCase()}`;
+            document.getElementById('sentimentResult').innerHTML = 
+                `<span class="sentiment-badge ${sentimentClass}">${data.sentiment}</span>`;
+            
+            // Display confidence
+            document.getElementById('confidenceResult').textContent = 
+                `Confidence: ${(data.confidence * 100).toFixed(1)}%`;
+            
+            // Display LLM response
+            document.getElementById('responseText').textContent = data.llm_response;
+            
+            // Handle audio
+            const audioControls = document.getElementById('audioControls');
+            const playButton = document.getElementById('playAudio');
+            const downloadLink = document.getElementById('downloadAudio');
+            const audioError = document.getElementById('audioError');
+            
+            if (data.has_audio) {
+                playButton.style.display = 'inline-block';
+                downloadLink.style.display = 'inline-block';
+                downloadLink.href = `/download_audio/${data.id}`;
+                audioError.style.display = 'none';
+                
+                // Setup play button
+                playButton.onclick = () => playAudio(data.id);
+            } else {
+                playButton.style.display = 'none';
+                downloadLink.style.display = 'none';
+                
+                if (data.audio_error) {
+                    audioError.textContent = `Audio not available: ${data.audio_error}`;
+                    audioError.style.display = 'block';
+                }
+            }
+            
+            // Show results
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function playAudio(feedbackId) {
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+            
+            currentAudio = new Audio(`/download_audio/${feedbackId}`);
+            currentAudio.play().catch(error => {
+                showError('Error playing audio: ' + error.message);
+            });
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+        
+        // Auto-resize textarea
+        document.getElementById('feedback').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    </script>
+</body>
+</html>
