@@ -22,22 +22,6 @@ venv.bak/
 # Azure
 .azure/
 
-# Deployment files and scripts
-AZURE_DEPLOYMENT.md
-AZURE_PORTAL_DEPLOY.md
-AZURE_SETUP.md
-DEPLOYMENT_GUIDE.md
-DEPLOYMENT_SUCCESS.md
-INTERVIEW_DEPLOYMENT_GUIDE.md
-HOW_TO_DEPLOY_FLASK_ON_AZURE.md
-comprehensive_test.py
-deploy_clean.sh
-deploy_heroku.sh
-deploy_to_azure.sh
-fix_azure_providers.sh
-quota_fix.sh
-deploy_free.sh
-
 # VS Code
 .vscode/settings.json
 .vscode/launch.json

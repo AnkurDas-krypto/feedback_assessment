@@ -9,12 +9,10 @@ import tempfile
 import uuid
 from datetime import datetime
 
-# Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
 
-# Azure Text Analytics setup
 azure_key = os.getenv('AZURE_TEXT_ANALYTICS_KEY')
 azure_endpoint = os.getenv('AZURE_TEXT_ANALYTICS_ENDPOINT')
 text_analytics_client = TextAnalyticsClient(
@@ -22,15 +20,12 @@ text_analytics_client = TextAnalyticsClient(
     credential=AzureKeyCredential(azure_key)
 ) if azure_key and azure_endpoint else None
 
-# Azure Speech setup
 speech_key = os.getenv('AZURE_SPEECH_KEY')
 speech_region = os.getenv('AZURE_SPEECH_REGION')
 
-# Groq setup
 groq_api_key = os.getenv('GROQ_API_KEY')
 groq_client = Groq(api_key=groq_api_key) if groq_api_key else None
 
-# Store feedback data (in production, use a database)
 feedback_data = []
 
 def analyze_sentiment(text):
@@ -66,7 +61,6 @@ def analyze_sentiment(text):
 def generate_llm_response(feedback, sentiment):
     """Generate response using Groq LLM"""
     if not groq_client:
-        # Fallback responses
         responses = {
             "Positive": "Thank you for your positive feedback! We're delighted to hear about your experience.",
             "Negative": "We apologize for any inconvenience. Your feedback is valuable and we'll work to improve.",
@@ -75,7 +69,6 @@ def generate_llm_response(feedback, sentiment):
         return responses.get(sentiment, "Thank you for your feedback.")
     
     try:
-        # Craft prompt based on sentiment
         prompt_templates = {
             "Positive": f"The customer provided positive feedback: '{feedback}'. Generate a brief, appreciative response (2-3 sentences) acknowledging their positive experience.",
             "Negative": f"The customer provided negative feedback: '{feedback}'. Generate a brief, empathetic response (2-3 sentences) acknowledging their concerns and showing commitment to improvement.",
@@ -110,19 +103,16 @@ def text_to_speech(text, sentiment):
         return None, "Azure Speech Services not configured"
     
     try:
-        # Configure speech with emotion based on sentiment
         speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=speech_region)
         
-        # Choose voice based on sentiment
         voice_map = {
-            "Positive": "en-US-JennyNeural",  # Cheerful voice
-            "Negative": "en-US-AriaNeural",   # Empathetic voice
-            "Neutral": "en-US-DavisNeural"    # Professional voice
+            "Positive": "en-US-JennyNeural",  
+            "Negative": "en-US-AriaNeural",   
+            "Neutral": "en-US-DavisNeural"   
         }
         
         speech_config.speech_synthesis_voice_name = voice_map.get(sentiment, "en-US-AriaNeural")
         
-        # Create temporary file
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
         temp_file.close()  # Close the file handle so Azure SDK can write to it
         
